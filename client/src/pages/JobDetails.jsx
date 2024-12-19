@@ -36,7 +36,7 @@ const JobDetails = () => {
     _id,
     buyer,
   } = job || {};
-console.log(compareAsc(new Date(startDate), new Date(deadline)));
+  console.log(compareAsc(new Date(startDate), new Date(deadline)));
 
   // Handle Form Submission
   const handleSubmit = (e) => {
@@ -49,20 +49,23 @@ console.log(compareAsc(new Date(startDate), new Date(deadline)));
     console.table({ price, email, comment, startDate });
 
     // 0. check bid permission validation
-    if(user?.email === buyer.email) return toast.error(" Action not allowed")
-    
+    if (user?.email === buyer.email) return toast.error(" Action not allowed");
+
     // 1. Deadline crossed validation
     if (compareAsc(new Date(), new Date(deadline)) === 1)
-      return toast.error('Deadline Crossed, Bidding Forbidden!')
+      return toast.error("Deadline Crossed, Bidding Forbidden!");
 
     // 2. Price within maximum price range validation
     if (price > max_price)
-      return toast.error('Offer less or at least equal to maximum price!')
+      return toast.error("Offer less or at least equal to maximum price!");
 
     // 3. offered deadline is within sellers deadline validation
-    if (compareAsc(new Date(startDate), new Date(deadline)) === 1 || compareAsc(new Date(), new Date(startDate)) === 1)
-      return toast.error('Offer a date within deadline')
-    // 
+    if (
+      compareAsc(new Date(startDate), new Date(deadline)) === 1 ||
+      compareAsc(new Date(), new Date(startDate)) === 1
+    )
+      return toast.error("Offer a date within deadline");
+    //
   };
   return (
     <div className="flex flex-col md:flex-row justify-around gap-5  items-center min-h-[calc(100vh-306px)] md:max-w-screen-xl mx-auto ">
@@ -167,7 +170,12 @@ console.log(compareAsc(new Date(startDate), new Date(deadline)));
           <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="px-8 py-2.5 leading-5 text-white transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+              disabled={user?.email === buyer?.email}
+              className={`px-8 py-2.5 leading-5 rounded-md text-white transition-colors duration-300 transform ${
+                user?.email === buyer?.email
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+              }`}
             >
               Place Bid
             </button>
