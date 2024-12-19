@@ -24,6 +24,7 @@ async function run() {
   try {
     const db = client.db('solo-db')
     const jobsCollection = db.collection('jobs')
+    const bidCollection = db.collection('bids')
 
     // save a jobData in db
     app.post('/add-job', async (req, res) => {
