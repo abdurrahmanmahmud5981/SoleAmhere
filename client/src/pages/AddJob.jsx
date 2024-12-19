@@ -21,7 +21,7 @@ const AddJob = () => {
     const min_price = parseFloat(form.min_price.value)
     const max_price = parseFloat(form.max_price.value)
     const description = form.description.value
-
+console.log(deadline);
     const formData = {
       title,
       buyer: {

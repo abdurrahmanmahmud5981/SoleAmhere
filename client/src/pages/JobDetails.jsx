@@ -1,5 +1,5 @@
 import axios from "axios";
-import { compareAsc, format } from "date-fns";
+import { compareAsc, compareDesc, format, setDate } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 
 import DatePicker from "react-datepicker";
@@ -36,6 +36,7 @@ const JobDetails = () => {
     _id,
     buyer,
   } = job || {};
+console.log(compareAsc(new Date(startDate), new Date(deadline)));
 
   // Handle Form Submission
   const handleSubmit = (e) => {
@@ -47,12 +48,20 @@ const JobDetails = () => {
 
     console.table({ price, email, comment, startDate });
 
-    // 1.Deadline Crossed validation
-    if (compareAsc(new Date(), new Date(deadline)))
-      return toast.error(" Deadline exceeded . Bidding Forbidden ");
-    //2. Price within maximum price range validations
+    // 0. check bid permission validation
+    if(user?.email === buyer.email) return toast.error(" Action not allowed")
+    // 1. Deadline crossed validation
+    if (compareAsc(new Date(), new Date(deadline)) === 1)
+      return toast.error('Deadline Crossed, Bidding Forbidden!')
+
+    // 2. Price within maximum price range validation
     if (price > max_price)
-      return toast.error(" Offer Less or Atleast equal to maximum");
+      return toast.error('Offer less or at least equal to maximum price!')
+
+    // 3. offered deadline is within sellers deadline validation
+    if (compareAsc(new Date(startDate), new Date(deadline)) === 1)
+      return toast.error('Offer a date within deadline')
+    // 
   };
   return (
     <div className="flex flex-col md:flex-row justify-around gap-5  items-center min-h-[calc(100vh-306px)] md:max-w-screen-xl mx-auto ">
