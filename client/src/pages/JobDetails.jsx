@@ -50,6 +50,7 @@ console.log(compareAsc(new Date(startDate), new Date(deadline)));
 
     // 0. check bid permission validation
     if(user?.email === buyer.email) return toast.error(" Action not allowed")
+    
     // 1. Deadline crossed validation
     if (compareAsc(new Date(), new Date(deadline)) === 1)
       return toast.error('Deadline Crossed, Bidding Forbidden!')
@@ -59,7 +60,7 @@ console.log(compareAsc(new Date(startDate), new Date(deadline)));
       return toast.error('Offer less or at least equal to maximum price!')
 
     // 3. offered deadline is within sellers deadline validation
-    if (compareAsc(new Date(startDate), new Date(deadline)) === 1)
+    if (compareAsc(new Date(startDate), new Date(deadline)) === 1 || compareAsc(new Date(), new Date(startDate)) === 1)
       return toast.error('Offer a date within deadline')
     // 
   };
@@ -119,7 +120,7 @@ console.log(compareAsc(new Date(startDate), new Date(deadline)));
               </label>
               <input
                 id="price"
-                type="text"
+                type="number"
                 name="price"
                 required
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md   focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring"
