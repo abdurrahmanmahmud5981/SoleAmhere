@@ -38,14 +38,12 @@ const JobDetails = () => {
   } = job || {};
 
   // Handle Form Submission
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const price = form.price.value;
     const email = user?.email;
     const comment = form.comment.value;
-
-   
 
     // 0. check bid permission validation
     if (user?.email === buyer.email) return toast.error(" Action not allowed");
@@ -65,20 +63,33 @@ const JobDetails = () => {
     )
       return toast.error("Offer a date within deadline");
 
-    const bidData = { price, email, comment, deadline:startDate ,jobId:_id}
-      try {
-        // 1. make a post request
-         const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/add-bid`, bidData)
-         console.log(data);
-        // 2. Reset form
-        form.reset()
-        // 3. Show toast and navigate
-        toast.success(' Bid Successful!!!')
-        navigate('/my-bids')
-      } catch (err) {
-        console.log(err)
-        toast.error(err?.response?.data)
-      }
+    const bidData = {
+      price,
+      email,
+      comment,
+      deadline: startDate,
+      jobId: _id,
+      title,
+      category,
+      status: "Pending",
+      buyer: buyer?.email
+    };
+    try {
+      // 1. make a post request
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/add-bid`,
+        bidData
+      );
+      console.log(data);
+      // 2. Reset form
+      form.reset();
+      // 3. Show toast and navigate
+      toast.success(" Bid Successful!!!");
+      navigate("/my-bids");
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response?.data);
+    }
     //
   };
   return (
