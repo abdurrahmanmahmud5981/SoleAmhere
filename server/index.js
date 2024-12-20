@@ -140,6 +140,30 @@ async function run() {
       res.send(result)
 
     })
+
+
+
+
+
+    // Get All Jobs For AllJobs Page 
+    app.get('/all-jobs', async (req, res) => {
+      const filter = req.query.filter;
+      const search = req.query.search;
+      console.log(search);
+      let query = {title:{
+        $regex: `.*${search}.*`,
+        // $regex: search,
+        $options: 'i' // 'i' for case-insensitive search
+      }}
+      if(filter) query.category = filter
+      const result = await jobsCollection.find(query).toArray()
+      res.send(result)
+    })
+
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
     console.log(
