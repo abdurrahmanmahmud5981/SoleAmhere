@@ -62,11 +62,17 @@ const AuthProvider = ({ children }) => {
           {
             email: currentUser?.email,
           },
-          {withCredentials: true}
+          { withCredentials: true }
         );
         console.log(data);
       } else {
         console.log("User Logged Out");
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/logout`,
+         
+          { withCredentials: true }
+        );
+        console.log(data);
       }
       setLoading(false);
     });

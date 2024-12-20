@@ -51,6 +51,14 @@ async function run() {
       }).send({ success: true })
     })
 
+    // logout or clear the cookie from browser
+    app.get('/logout', async (req, res) => {
+      res.clearCookie("token", {
+        maxAge: 0,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
+      }).send({ success: true })
+    })
 
 
     //  app.post()
