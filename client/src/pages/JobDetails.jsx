@@ -1,18 +1,18 @@
 import axios from "axios";
-import { compareAsc, compareDesc, format, setDate } from "date-fns";
+import { compareAsc, format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 
 const JobDetails = () => {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [startDate, setStartDate] = useState(new Date());
   const { id } = useParams();
-  console.log(id);
   const [job, setJob] = useState({});
   useEffect(() => {
     fetchJobData();
@@ -36,17 +36,16 @@ const JobDetails = () => {
     _id,
     buyer,
   } = job || {};
-  console.log(compareAsc(new Date(startDate), new Date(deadline)));
 
   // Handle Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     e.preventDefault();
     const form = e.target;
     const price = form.price.value;
     const email = user?.email;
     const comment = form.comment.value;
 
-    console.table({ price, email, comment, startDate });
+   
 
     // 0. check bid permission validation
     if (user?.email === buyer.email) return toast.error(" Action not allowed");
@@ -65,6 +64,21 @@ const JobDetails = () => {
       compareAsc(new Date(), new Date(startDate)) === 1
     )
       return toast.error("Offer a date within deadline");
+
+    const bidData = { price, email, comment, deadline:startDate ,jobId:_id}
+      try {
+        // 1. make a post request
+         const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/add-bid`, bidData)
+         console.log(data);
+        // 2. Reset form
+        form.reset()
+        // 3. Show toast and navigate
+        toast.success(' Bid Successful!!!')
+        navigate('/my-bids')
+      } catch (err) {
+        console.log(err)
+        toast.error(err?.response?.data)
+      }
     //
   };
   return (
@@ -101,7 +115,7 @@ const JobDetails = () => {
               </p>
             </div>
             <div className="rounded-full object-cover overflow-hidden w-14 h-14">
-              <img src={buyer?.photo} alt="" />
+              <img referrerPolicy="no-referrer" src={buyer?.photo} alt="" />
             </div>
           </div>
           <p className="mt-6 text-lg font-bold text-gray-600 ">

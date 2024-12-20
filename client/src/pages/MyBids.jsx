@@ -1,4 +1,5 @@
 const MyBids = () => {
+  
   return (
     <section className='container px-4 mx-auto my-12'>
       <div className='flex items-center gap-x-3'>
