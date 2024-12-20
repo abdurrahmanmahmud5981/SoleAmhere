@@ -130,7 +130,7 @@ async function run() {
     // update bid status
     app.patch('/bid-status-update/:id', async (req, res,) => {
       const id = req.params.id;
-      const {status} = req.body;
+      const { status } = req.body;
       // return console.log(id, status);
       const filter = { _id: new ObjectId(id) }
       const updated = {
@@ -149,14 +149,20 @@ async function run() {
     app.get('/all-jobs', async (req, res) => {
       const filter = req.query.filter;
       const search = req.query.search;
+      const sort = req.query.sort;
+      let options = {}
+      // if (sort) options.sort = { [sort]: 1 }  // 1 for ascending, -1 for descending
+      if (sort) options = { sort: { deadline: sort === "asc" ? 1 : -1 } }
       console.log(search);
-      let query = {title:{
-        $regex: `.*${search}.*`,
-        // $regex: search,
-        $options: 'i' // 'i' for case-insensitive search
-      }}
-      if(filter) query.category = filter
-      const result = await jobsCollection.find(query).toArray()
+      let query = {
+        title: {
+          $regex: `.*${search}.*`,
+          // $regex: search,
+          $options: 'i' // 'i' for case-insensitive search
+        }
+      }
+      if (filter) query.category = filter
+      const result = await jobsCollection.find(query, options).toArray()
       res.send(result)
     })
 

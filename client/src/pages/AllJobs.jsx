@@ -7,15 +7,18 @@ const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
   useEffect(() => {
     const fetchAllJobs = async () => {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/all-jobs?filter=${filter}&search=${search}`
+        `${
+          import.meta.env.VITE_API_URL
+        }/all-jobs?filter=${filter}&search=${search}&sort=${sort}`
       );
       setJobs(data);
     };
     fetchAllJobs();
-  }, [filter,search]);
+  }, [filter, search, sort]);
 
   console.log(filter);
 
@@ -50,7 +53,10 @@ const AllJobs = () => {
                 aria-label="Enter Job Title"
               />
 
-              <button onClick={(e)=>e.preventDefault()} className="px-1 md:px-4 py-3 text-sm font-medium tracking-wider text-gray-100 uppercase transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:bg-gray-600 focus:outline-none">
+              <button
+                onClick={(e) => e.preventDefault()}
+                className="px-1 md:px-4 py-3 text-sm font-medium tracking-wider text-gray-100 uppercase transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:bg-gray-600 focus:outline-none"
+              >
                 Search
               </button>
             </div>
@@ -60,6 +66,7 @@ const AllJobs = () => {
               name="category"
               id="category"
               className="border p-4 rounded-md"
+              onChange={(e) => setSort(e.target.value)}
             >
               <option value="">Sort By Deadline</option>
               <option value="dsc">Descending Order</option>
