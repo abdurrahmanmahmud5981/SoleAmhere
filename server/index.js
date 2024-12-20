@@ -7,7 +7,15 @@ const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 9000
 const app = express()
 
-app.use(cors())
+
+const corsOptions = {
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  credentials: true,
+  optionsSuccessStatus: 200,
+
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@main.yolij.mongodb.net/?retryWrites=true&w=majority&appName=Main`
@@ -31,14 +39,21 @@ async function run() {
     app.post('/jwt', async (req, res) => {
       const email = req.body
       // create a token 
-       const tokent = jwt.sign(email,process.env.SECRET_KEY,{expiresIn: '365d'})
-       console.log(tokent);
-       res.send(tokent)
+      const tokent = jwt.sign(email, process.env.SECRET_KEY, { expiresIn: '365d' })
+      console.log(tokent);
+
+      // send the token to the client
+      // set a cookie with the token
+      res.cookie("token", tokent, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
+      }).send({ success: true })
     })
 
 
 
-  //  app.post()
+    //  app.post()
     // save a jobData in db
     app.post('/add-job', async (req, res) => {
       const jobData = req.body
