@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
 
 const port = process.env.PORT || 9000
 const app = express()
@@ -26,6 +27,18 @@ async function run() {
     const jobsCollection = db.collection('jobs')
     const bidsCollection = db.collection('bids')
 
+    // generate jwt token
+    app.post('/jwt', async (req, res) => {
+      const email = req.body
+      // create a token 
+       const tokent = jwt.sign(email,process.env.SECRET_KEY,{expiresIn: '365d'})
+       console.log(tokent);
+       res.send(tokent)
+    })
+
+
+
+  //  app.post()
     // save a jobData in db
     app.post('/add-job', async (req, res) => {
       const jobData = req.body
