@@ -95,8 +95,8 @@ async function run() {
 
     // get all jobs posted by a specific user
     app.get('/jobs/:email', verifyToken, async (req, res) => {
-      const decodedEmail = req.user?.email
       const email = req.params.email
+      const decodedEmail = req.user?.email
       if (decodedEmail !== email) return res.status(401).send({ message: "unauthorized access" });
       const query = { 'buyer.email': email }
       const result = await jobsCollection.find(query).toArray()
@@ -161,9 +161,11 @@ async function run() {
 
 
     // get all bids for a specific user
-    app.get('/bids/:email', async (req, res) => {
+    app.get('/bids/:email', verifyToken, async (req, res) => {
       const isBuyer = req.query.buyer
       const email = req.params.email
+      const decodedEmail = req.user?.email
+      if (decodedEmail !== email) return res.status(401).send({ message: "unauthorized access" });
       let query = {}
       if (isBuyer) {
         query.buyer = email

@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
-import { axiosSecure } from "../hooks/useAxiosSecure";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+
 const MyPostedJobs = () => {
+  const axiosSecure = useAxiosSecure()
   const { user } = useContext(AuthContext);
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
@@ -13,8 +15,7 @@ const MyPostedJobs = () => {
   }, [user]);
   const fetchAllJobs = async () => {
     const { data } = await axiosSecure.get(
-      `/jobs/${user?.email}`,
-      { withCredentials: true }
+      `/jobs/${user?.email}`
     );
     setJobs(data);
   };
