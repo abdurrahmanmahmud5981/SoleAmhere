@@ -39,8 +39,8 @@ const verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).send({ message: "unauthorized access" });
     req.user = decoded
-    console.log('Decoded: ', decoded);
-    console.log("Email: ", req.user?.email);
+    // console.log('Decoded: ', decoded);
+    // console.log("Email: ", req.user?.email);
     next()
   })
 }
@@ -80,7 +80,7 @@ async function run() {
 
     //  app.post()
     // save a jobData in db
-    app.post('/add-job', async (req, res) => {
+    app.post('/add-job',verifyToken, async (req, res) => {
       const jobData = req.body
       const result = await jobsCollection.insertOne(jobData)
       console.log(result)
@@ -104,7 +104,7 @@ async function run() {
     })
 
     // delete a job from db
-    app.delete('/job/:id', async (req, res) => {
+    app.delete('/job/:id',verifyToken, async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await jobsCollection.deleteOne(query)
@@ -112,7 +112,7 @@ async function run() {
     })
 
     // get a single job data by id from db
-    app.get('/job/:id', async (req, res) => {
+    app.get('/job/:id',verifyToken, async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await jobsCollection.findOne(query)
@@ -120,7 +120,7 @@ async function run() {
     })
 
     // save a jobData in db
-    app.put('/update-job/:id', async (req, res) => {
+    app.put('/update-job/:id',verifyToken, async (req, res) => {
       const id = req.params.id
       const jobData = req.body
       const updated = {
@@ -135,7 +135,7 @@ async function run() {
 
 
     // save a bid data in db
-    app.post('/add-bid', async (req, res) => {
+    app.post('/add-bid',verifyToken, async (req, res) => {
       const bidbData = req.body
       // 0. if a user placed abid already in this job
       const query = { email: bidbData.email, jobId: bidbData.jobId }
@@ -185,7 +185,7 @@ async function run() {
     // })
 
     // update bid status
-    app.patch('/bid-status-update/:id', async (req, res,) => {
+    app.patch('/bid-status-update/:id',verifyToken, async (req, res,) => {
       const id = req.params.id;
       const { status } = req.body;
       // return console.log(id, status);
