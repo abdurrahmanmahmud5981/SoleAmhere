@@ -8,15 +8,16 @@ import LoadingSpinner from "./LoadingSpinner";
 
 const TabCategories = () => {
  
-  const {data:jobs,isLoading} = useQuery({
+  const {data:jobs,isLoading,isError} = useQuery({
     queryKey: ["jobs"],
     queryFn: async () => {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/jobs`);
       return data;
     },
   });
-console.log({jobs,isLoading});
+
   if (isLoading) return <LoadingSpinner/>
+  if (isError) return <h1>Error fetching data</h1>
   return (
     <Tabs>
       <div className=" container px-6 py-10 mx-auto">
